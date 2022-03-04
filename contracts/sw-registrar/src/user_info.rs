@@ -1,3 +1,5 @@
+use crate::*;
+
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{env, AccountId};
@@ -87,4 +89,10 @@ impl VersionedUserInfo {
     }
 }
 
-
+impl Contract {
+    pub(crate) fn internal_register_new_user(&mut self, user_account_id: &AccountId, user_name: &String) {
+        assert!(!self.data().users.contains_key(user_account_id), "ERR_USER_ALREADY_REGISTERED");
+        let ui = VersionedUserInfo::new(user_account_id, user_name);
+        self.data_mut().users.insert(user_account_id, &ui);
+    }
+}

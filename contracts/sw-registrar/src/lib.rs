@@ -1,7 +1,7 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::json_types::{ValidAccountId};
 use near_sdk::collections::{LookupMap, UnorderedSet};
-use near_sdk::{env, near_bindgen, AccountId, PanicOnDefault};
+use near_sdk::{env, near_bindgen, AccountId, PanicOnDefault, Balance, Promise, StorageUsage};
 use near_sdk::BorshStorageKey;
 
 use crate::user_info::VersionedUserInfo;
@@ -77,5 +77,25 @@ impl Contract {
     fn is_owner_or_operators(&self) -> bool {
         env::predecessor_account_id() == self.data().owner_id 
             || self.data().operators.contains(&env::predecessor_account_id())
+    }
+
+    /// Check how much storage taken costs and refund the left over back.
+    fn internal_check_storage(&self, prev_storage: StorageUsage) {
+        let storage_cost = env::storage_usage()
+            .checked_sub(prev_storage)
+            .unwrap_or_default() as Balance
+            * env::storage_byte_cost();
+
+        let refund = env::attached_deposit()
+            .checked_sub(storage_cost)
+            .expect(
+                format!(
+                    "ERR_STORAGE_DEPOSIT need {}, attatched {}", 
+                    storage_cost, env::attached_deposit()
+                ).as_str()
+            );
+        if refund > 0 {
+            Promise::new(env::predecessor_account_id()).transfer(refund);
+        }
     }
 }

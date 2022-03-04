@@ -29,8 +29,12 @@ impl Contract {
         }
     }
 
+    #[payable]
     pub fn register_new_user(&mut self, accound_id: ValidAccountId, user_name: String) {
+        let prev_storage = env::storage_usage();
         assert!(self.is_owner_or_operators(), "ERR_NOT_ALLOWED");
+        self.internal_register_new_user(accound_id.as_ref(), &user_name);
+        self.internal_check_storage(prev_storage);
     }
 
     /// Migration function between versions.
