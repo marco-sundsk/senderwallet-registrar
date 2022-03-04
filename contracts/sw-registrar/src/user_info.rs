@@ -94,5 +94,6 @@ impl Contract {
         assert!(!self.data().users.contains_key(user_account_id), "ERR_USER_ALREADY_REGISTERED");
         let ui = VersionedUserInfo::new(user_account_id, user_name);
         self.data_mut().users.insert(user_account_id, &ui);
+        self.data_mut().user_count += 1;
     }
 }
