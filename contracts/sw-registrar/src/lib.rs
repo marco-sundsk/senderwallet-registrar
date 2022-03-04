@@ -9,6 +9,7 @@ use crate::user_info::VersionedUserInfo;
 mod user_info;
 mod owner;
 mod utils;
+mod views;
 
 near_sdk::setup_alloc!();
 
