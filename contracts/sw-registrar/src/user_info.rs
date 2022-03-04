@@ -1,6 +1,8 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::{AccountId};
+use near_sdk::{env, AccountId};
+
+use crate::utils::*;
 
 #[derive(BorshSerialize, BorshDeserialize)]
 #[cfg_attr(feature = "test", derive(Clone))]
@@ -8,7 +10,7 @@ pub struct UserInfo {
     /// The Farming Token this FarmSeed represented for
     pub account_id: AccountId,
     pub user_name: String,
-    pub register_at: u32,
+    pub register_at: TimestampSec,
 }
 
 impl UserInfo {
@@ -16,7 +18,7 @@ impl UserInfo {
         Self {
             account_id: account_id.clone(),
             user_name: user_name.clone(),
-            register_at: 0,
+            register_at: to_sec(env::block_timestamp()),
         }
     }
 }
