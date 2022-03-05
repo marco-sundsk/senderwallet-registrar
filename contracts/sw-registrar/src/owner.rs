@@ -13,7 +13,6 @@ impl Contract {
     }
 
     /// Extend operators. Only can be called by owner.
-    #[payable]
     pub fn extend_operators(&mut self, operators: Vec<ValidAccountId>) {
         self.assert_owner();
         for operator in operators {
