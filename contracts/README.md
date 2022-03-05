@@ -8,6 +8,18 @@ An upgradable IMS contract for Sender-Wallet user management.
 
 ### For Everyone
 ```rust
+pub struct ContractMetadata {
+    pub version: String,
+    /// the owner of the contract, normally a DAO
+    pub owner_id: AccountId,
+    /// those operators's near accounts
+    pub operators: Vec<AccountId>,
+    /// how many users currently managed
+    pub user_count: U64,
+}
+/// get contract basic info
+pub fn metadata(&self) -> ContractMetadata;
+
 pub struct HumanReadableUserInfo {
     // user NEAR Account, the key to find a user
     pub account_id: AccountId,
